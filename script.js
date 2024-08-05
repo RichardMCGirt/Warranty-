@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentDate = new Date();
     let events = {};
+    let selectedDateCell = null;
 
     function renderCalendar() {
         const year = currentDate.getFullYear();
@@ -40,6 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
             dateCell.textContent = date;
             dateCell.classList.add('date-cell');
             dateCell.addEventListener('click', () => {
+                if (selectedDateCell) {
+                    selectedDateCell.classList.remove('selected');
+                }
+                dateCell.classList.add('selected');
+                selectedDateCell = dateCell;
+
                 selectedDateInput.value = `${year}-${month + 1}-${date}`;
                 showEventForm();
                 updateEventList(selectedDateInput.value);

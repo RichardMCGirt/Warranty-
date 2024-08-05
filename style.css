@@ -1,11 +1,46 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
+}
+
+.topnav {
+    width: 100%;
+    background-color: #333;
+}
+
+.topnav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.topnav ul li {
+    margin: 0;
+}
+
+.topnav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: block;
+}
+
+.topnav ul li a:hover {
+    background-color: #575757;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 50px);
+    width: 100%;
 }
 
 .calendar {
@@ -14,13 +49,14 @@ body {
     background: #fff;
     width: 300px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -29,7 +65,7 @@ body {
 }
 
 .calendar-body {
-    padding: 10px;
+    padding-top: 10px;
 }
 
 .calendar-days {
@@ -58,7 +94,12 @@ body {
 }
 
 .date-cell:hover {
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
+}
+
+.date-cell.selected {
+    background-color: #4caf50;
+    color: white;
 }
 
 .hidden {
@@ -73,17 +114,35 @@ body {
     margin: 0 0 10px 0;
 }
 
+.event-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
 .event-form input, .event-form textarea, .event-form select {
     width: 100%;
     margin-bottom: 10px;
-    padding: 5px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
 .event-form button {
     margin-right: 5px;
-    padding: 5px 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.event-form button#add-event {
+    background-color: #4caf50;
+    color: white;
+}
+
+.event-form button#cancel-event {
+    background-color: #f44336;
+    color: white;
 }
 
 .events-list ul {
@@ -92,6 +151,6 @@ body {
 }
 
 .events-list li {
-    padding: 5px;
+    padding: 10px;
     border-bottom: 1px solid #ddd;
 }
