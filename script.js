@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventList = document.getElementById('event-list');
     const feedbackMessage = document.createElement('div');
     feedbackMessage.className = 'feedback-message';
+    const rescheduleEventForm = document.getElementById('reschedule-event-form');
+    const rescheduleEventIndexInput = document.getElementById('reschedule-event-index');
+    const rescheduleDateInput = document.getElementById('reschedule-date');
+    const rescheduleEventTitleInput = document.getElementById('reschedule-event-title');
+    const rescheduleEventDescriptionInput = document.getElementById('reschedule-event-description');
+    const rescheduleTimeSlotSelect = document.getElementById('reschedule-time-slot');
+    const saveRescheduleButton = document.getElementById('save-reschedule');
+    const cancelRescheduleButton = document.getElementById('cancel-reschedule');
 
     let currentDate = new Date();
     let events = JSON.parse(localStorage.getItem('events')) || {};
@@ -107,12 +115,26 @@ document.addEventListener('DOMContentLoaded', () => {
         eventsListSection.classList.remove('hidden');
     }
 
+    function showRescheduleEventForm() {
+        rescheduleEventForm.classList.remove('hidden');
+        eventsListSection.classList.add('hidden');
+    }
+
+    function hideRescheduleEventForm() {
+        rescheduleEventForm.classList.add('hidden');
+        eventsListSection.classList.remove('hidden');
+    }
+
     function updateEventList(dateStr) {
         eventList.innerHTML = '';
         if (events[dateStr]) {
-            events[dateStr].forEach(event => {
+            events[dateStr].forEach((event, index) => {
                 const eventItem = document.createElement('li');
-                eventItem.textContent = `${event.title} at ${event.time}: ${event.description}`;
+                eventItem.innerHTML = `
+                    ${event.title} at ${event.time}: ${event.description}
+                    <button class="reschedule-event" data-date="${dateStr}" data-index="${index}">Reschedule</button>
+                    <button class="delete-event" data-date="${dateStr}" data-index="${index}">Delete</button>
+                `;
                 eventList.appendChild(eventItem);
             });
         }
@@ -191,6 +213,80 @@ document.addEventListener('DOMContentLoaded', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
         }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('reschedule-event')) {
+            const dateStr = e.target.getAttribute('data-date');
+            const index = e.target.getAttribute('data-index');
+            const event = events[dateStr][index];
+
+            rescheduleEventIndexInput.value = index;
+            rescheduleDateInput.value = dateStr;
+            rescheduleEventTitleInput.value = event.title;
+            rescheduleEventDescriptionInput.value = event.description;
+            rescheduleTimeSlotSelect.value = event.time;
+
+            showRescheduleEventForm();
+        }
+
+        if (e.target.classList.contains('delete-event')) {
+            const dateStr = e.target.getAttribute('data-date');
+            const index = e.target.getAttribute('data-index');
+
+            events[dateStr].splice(index, 1);
+            if (events[dateStr].length === 0) {
+                delete events[dateStr];
+            }
+            localStorage.setItem('events', JSON.stringify(events));
+            updateEventList(dateStr);
+            renderCalendar();
+            showFeedbackMessage('Appointment canceled successfully!', true);
+        }
+    });
+
+    saveRescheduleButton.addEventListener('click', () => {
+        const oldDateStr = rescheduleDateInput.value;
+        const newDateStr = document.getElementById('reschedule-date').value;
+        const index = rescheduleEventIndexInput.value;
+        const title = rescheduleEventTitleInput.value.trim();
+        const description = rescheduleEventDescriptionInput.value.trim();
+        const timeSlot = rescheduleTimeSlotSelect.value;
+
+        if (newDateStr && title && timeSlot) {
+            const event = {
+                title,
+                description,
+                time: timeSlot
+            };
+
+            // Remove event from old date
+            if (oldDateStr !== newDateStr) {
+                events[oldDateStr].splice(index, 1);
+                if (events[oldDateStr].length === 0) {
+                    delete events[oldDateStr];
+                }
+                if (!events[newDateStr]) {
+                    events[newDateStr] = [];
+                }
+                events[newDateStr].push(event);
+            } else {
+                events[oldDateStr][index] = event;
+            }
+
+            localStorage.setItem('events', JSON.stringify(events));
+
+            updateEventList(newDateStr);
+            renderCalendar();
+            hideRescheduleEventForm();
+            showFeedbackMessage('Appointment rescheduled successfully!', true);
+        } else {
+            showFeedbackMessage('Please fill in all fields.', false);
+        }
+    });
+
+    cancelRescheduleButton.addEventListener('click', () => {
+        hideRescheduleEventForm();
     });
 
     renderCalendar();
