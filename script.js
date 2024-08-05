@@ -12,46 +12,88 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEventButton = document.getElementById('add-event');
     const cancelEventButton = document.getElementById('cancel-event');
     const eventList = document.getElementById('event-list');
+    const feedbackMessage = document.createElement('div');
+    feedbackMessage.className = 'feedback-message';
 
     let currentDate = new Date();
-    let events = {};
+    let events = JSON.parse(localStorage.getItem('events')) || {};
     let selectedDateCell = null;
 
+    document.body.appendChild(feedbackMessage);
+
     function renderCalendar() {
+        const today = new Date();
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         monthYear.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
-        // Get first and last day of the month
         const firstDay = new Date(year, month, 1).getDay();
         const lastDate = new Date(year, month + 1, 0).getDate();
 
-        // Clear previous dates
         calendarDates.innerHTML = '';
 
-        // Add padding for first day of the month
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div');
             calendarDates.appendChild(emptyCell);
         }
 
-        // Add dates of the month
         for (let date = 1; date <= lastDate; date++) {
             const dateCell = document.createElement('div');
             dateCell.textContent = date;
             dateCell.classList.add('date-cell');
-            dateCell.addEventListener('click', () => {
-                if (selectedDateCell) {
-                    selectedDateCell.classList.remove('selected');
-                }
-                dateCell.classList.add('selected');
-                selectedDateCell = dateCell;
+            dateCell.tabIndex = 0; // Make date cells focusable
+            const cellDate = new Date(year, month, date);
 
-                selectedDateInput.value = `${year}-${month + 1}-${date}`;
-                showEventForm();
-                updateEventList(selectedDateInput.value);
-            });
+            if (cellDate < today.setHours(0, 0, 0, 0)) {
+                dateCell.classList.add('past-date');
+                dateCell.style.pointerEvents = 'none';
+                dateCell.style.opacity = '0.5';
+            } else {
+                dateCell.addEventListener('click', () => {
+                    selectDateCell(dateCell, year, month, date);
+                });
+                dateCell.addEventListener('keydown', (e) => handleDateKeydown(e, dateCell, year, month, date));
+            }
             calendarDates.appendChild(dateCell);
+        }
+    }
+
+    function selectDateCell(dateCell, year, month, date) {
+        if (selectedDateCell) {
+            selectedDateCell.classList.remove('selected');
+        }
+        dateCell.classList.add('selected');
+        selectedDateCell = dateCell;
+
+        selectedDateInput.value = `${year}-${month + 1}-${date}`;
+        showEventForm();
+        updateEventList(selectedDateInput.value);
+        updateBookedSlots(selectedDateInput.value);
+    }
+
+    function handleDateKeydown(event, dateCell, year, month, date) {
+        switch (event.key) {
+            case 'ArrowLeft':
+                moveFocus(dateCell, -1);
+                break;
+            case 'ArrowRight':
+                moveFocus(dateCell, 1);
+                break;
+            case 'ArrowUp':
+                moveFocus(dateCell, -7);
+                break;
+            case 'ArrowDown':
+                moveFocus(dateCell, 7);
+                break;
+        }
+    }
+
+    function moveFocus(dateCell, offset) {
+        const allDates = [...calendarDates.querySelectorAll('.date-cell')];
+        const currentIndex = allDates.indexOf(dateCell);
+        const newIndex = currentIndex + offset;
+        if (newIndex >= 0 && newIndex < allDates.length) {
+            allDates[newIndex].focus();
         }
     }
 
@@ -77,23 +119,53 @@ document.addEventListener('DOMContentLoaded', () => {
         eventsListSection.classList.remove('hidden');
     }
 
+    function updateBookedSlots(dateStr) {
+        const bookedTimes = events[dateStr]?.map(event => event.time) || [];
+        timeSlotSelect.querySelectorAll('option').forEach(option => {
+            if (bookedTimes.includes(option.value)) {
+                option.disabled = true;
+                option.textContent = `${option.value} (Booked)`;
+            } else {
+                option.disabled = false;
+                option.textContent = option.value;
+            }
+        });
+    }
+
+    function showFeedbackMessage(message, success = true) {
+        feedbackMessage.textContent = message;
+        feedbackMessage.style.backgroundColor = success ? 'green' : 'red';
+        feedbackMessage.style.display = 'block';
+        setTimeout(() => {
+            feedbackMessage.style.display = 'none';
+        }, 3000);
+    }
+
     addEventButton.addEventListener('click', () => {
         const dateStr = selectedDateInput.value;
         const timeSlot = timeSlotSelect.value;
-        if (dateStr && eventTitleInput.value && timeSlot) {
+        const title = eventTitleInput.value.trim();
+        const description = eventDescriptionInput.value.trim();
+
+        if (dateStr && title && timeSlot) {
             if (!events[dateStr]) {
                 events[dateStr] = [];
             }
             events[dateStr].push({
-                title: eventTitleInput.value,
-                description: eventDescriptionInput.value,
+                title,
+                description,
                 time: timeSlot
             });
+            localStorage.setItem('events', JSON.stringify(events));
+
             eventTitleInput.value = '';
             eventDescriptionInput.value = '';
             updateEventList(dateStr);
             renderCalendar();
             hideEventForm();
+            showFeedbackMessage('Appointment scheduled successfully!', true);
+        } else {
+            showFeedbackMessage('Please fill in all fields.', false);
         }
     });
 
@@ -109,6 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
     nextMonthButton.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        } else if (e.key === 'ArrowRight') {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
     });
 
     renderCalendar();

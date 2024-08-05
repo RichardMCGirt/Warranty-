@@ -47,7 +47,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     background: #fff;
-    width: 300px;
+    width: 350px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 20px;
 }
@@ -62,6 +62,7 @@ body {
 
 .calendar-header h2 {
     margin: 0;
+    font-size: 1.5em;
 }
 
 .calendar-body {
@@ -92,6 +93,26 @@ body {
     border: 1px solid #ddd;
     cursor: pointer;
 }
+
+.date-cell {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.date-cell:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.date-cell.selected {
+    background-color: #4caf50;
+    color: white;
+}
+
 
 .date-cell:hover {
     background-color: #e0e0e0;
@@ -153,4 +174,17 @@ body {
 .events-list li {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+}
+
+.feedback-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    color: white;
+    border-radius: 4px;
+    display: none;
+    z-index: 1000;
+    font-weight: bold;
 }
