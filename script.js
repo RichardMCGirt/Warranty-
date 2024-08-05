@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedDateInput = document.getElementById('selected-date');
     const eventForm = document.getElementById('event-form');
     const eventsListSection = document.getElementById('events-list');
-    const eventTitleInput = document.getElementById('event-title');
     const eventDescriptionInput = document.getElementById('event-description');
+    const eventAddressInput = document.getElementById('event-address');
+    const eventPhotoInput = document.getElementById('event-photo');
     const timeSlotSelect = document.getElementById('time-slot');
     const addEventButton = document.getElementById('add-event');
     const cancelEventButton = document.getElementById('cancel-event');
@@ -17,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rescheduleEventForm = document.getElementById('reschedule-event-form');
     const rescheduleEventIndexInput = document.getElementById('reschedule-event-index');
     const rescheduleDateInput = document.getElementById('reschedule-date');
-    const rescheduleEventTitleInput = document.getElementById('reschedule-event-title');
     const rescheduleEventDescriptionInput = document.getElementById('reschedule-event-description');
+    const rescheduleEventAddressInput = document.getElementById('reschedule-event-address');
+    const rescheduleEventPhotoInput = document.getElementById('reschedule-event-photo');
     const rescheduleTimeSlotSelect = document.getElementById('reschedule-time-slot');
     const saveRescheduleButton = document.getElementById('save-reschedule');
     const cancelRescheduleButton = document.getElementById('cancel-reschedule');
@@ -145,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
             events[dateStr].forEach((event, index) => {
                 const eventItem = document.createElement('li');
                 eventItem.innerHTML = `
-                    ${event.title} at ${event.time}: ${event.description}
+                    <img src="${event.photo}" alt="Event Photo" width="50" height="50" />
+                    ${event.description} at ${event.time}, ${event.address}
                     <button class="reschedule-event" data-date="${dateStr}" data-index="${index}">Reschedule</button>
                     <button class="delete-event" data-date="${dateStr}" data-index="${index}">Delete</button>
                 `;
@@ -180,8 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     appointmentItem.innerHTML = `
                         <strong>Date:</strong> ${dateStr} <br>
                         <strong>Time:</strong> ${event.time} <br>
-                        <strong>Title:</strong> ${event.title} <br>
                         <strong>Description:</strong> ${event.description} <br>
+                        <strong>Address:</strong> ${event.address} <br>
+                        <img src="${event.photo}" alt="Event Photo" width="50" height="50" />
                         <button class="reschedule-event" data-date="${dateStr}" data-index="${index}">Reschedule</button>
                         <button class="delete-event" data-date="${dateStr}" data-index="${index}">Delete</button>
                     `;
@@ -204,27 +208,35 @@ document.addEventListener('DOMContentLoaded', () => {
     addEventButton.addEventListener('click', () => {
         const dateStr = selectedDateInput.value;
         const timeSlot = timeSlotSelect.value;
-        const title = eventTitleInput.value.trim();
         const description = eventDescriptionInput.value.trim();
+        const address = eventAddressInput.value.trim();
+        const photoFile = eventPhotoInput.files[0];
 
-        if (dateStr && title && timeSlot) {
-            if (!events[dateStr]) {
-                events[dateStr] = [];
-            }
-            events[dateStr].push({
-                title,
-                description,
-                time: timeSlot
-            });
-            localStorage.setItem('events', JSON.stringify(events));
+        if (dateStr && description && timeSlot && address && photoFile) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photo = e.target.result;
+                if (!events[dateStr]) {
+                    events[dateStr] = [];
+                }
+                events[dateStr].push({
+                    description,
+                    address,
+                    time: timeSlot,
+                    photo
+                });
+                localStorage.setItem('events', JSON.stringify(events));
 
-            eventTitleInput.value = '';
-            eventDescriptionInput.value = '';
-            updateEventList(dateStr);
-            renderCalendar();
-            hideEventForm();
-            showFeedbackMessage('Appointment scheduled successfully!', true);
-            location.reload();  // Refresh the page
+                eventDescriptionInput.value = '';
+                eventAddressInput.value = '';
+                eventPhotoInput.value = '';
+                updateEventList(dateStr);
+                renderCalendar();
+                hideEventForm();
+                showFeedbackMessage('Appointment scheduled successfully!', true);
+                location.reload();  // Refresh the page
+            };
+            reader.readAsDataURL(photoFile);
         } else {
             showFeedbackMessage('Please fill in all fields.', false);
         }
@@ -262,8 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rescheduleEventIndexInput.value = index;
             rescheduleDateInput.value = dateStr;
-            rescheduleEventTitleInput.value = event.title;
             rescheduleEventDescriptionInput.value = event.description;
+            rescheduleEventAddressInput.value = event.address;
             rescheduleTimeSlotSelect.value = event.time;
 
             showRescheduleEventForm();
@@ -291,44 +303,58 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldDateStr = rescheduleDateInput.value;
         const newDateStr = document.getElementById('reschedule-date').value;
         const index = rescheduleEventIndexInput.value;
-        const title = rescheduleEventTitleInput.value.trim();
         const description = rescheduleEventDescriptionInput.value.trim();
+        const address = rescheduleEventAddressInput.value.trim();
+        const photoFile = rescheduleEventPhotoInput.files[0];
         const timeSlot = rescheduleTimeSlotSelect.value;
 
-        if (newDateStr && title && timeSlot) {
+        if (newDateStr && description && timeSlot && address) {
             const event = {
-                title,
                 description,
+                address,
                 time: timeSlot
             };
 
-            // Remove event from old date
-            if (oldDateStr !== newDateStr) {
-                if (events[oldDateStr] && events[oldDateStr][index]) {
-                    events[oldDateStr].splice(index, 1);
-                    if (events[oldDateStr].length === 0) {
-                        delete events[oldDateStr];
-                    }
-                }
-                if (!events[newDateStr]) {
-                    events[newDateStr] = [];
-                }
-                events[newDateStr].push(event);
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    event.photo = e.target.result;
+                    rescheduleEvent(event, oldDateStr, newDateStr, index);
+                };
+                reader.readAsDataURL(photoFile);
             } else {
-                events[oldDateStr][index] = event;
+                event.photo = events[oldDateStr][index].photo;
+                rescheduleEvent(event, oldDateStr, newDateStr, index);
             }
-
-            localStorage.setItem('events', JSON.stringify(events));
-
-            updateEventList(newDateStr);
-            renderCalendar();
-            hideRescheduleEventForm();
-            showFeedbackMessage('Appointment rescheduled successfully!', true);
-            location.reload();  // Refresh the page
         } else {
             showFeedbackMessage('Please fill in all fields.', false);
         }
     });
+
+    function rescheduleEvent(event, oldDateStr, newDateStr, index) {
+        if (oldDateStr !== newDateStr) {
+            if (events[oldDateStr] && events[oldDateStr][index]) {
+                events[oldDateStr].splice(index, 1);
+                if (events[oldDateStr].length === 0) {
+                    delete events[oldDateStr];
+                }
+            }
+            if (!events[newDateStr]) {
+                events[newDateStr] = [];
+            }
+            events[newDateStr].push(event);
+        } else {
+            events[oldDateStr][index] = event;
+        }
+
+        localStorage.setItem('events', JSON.stringify(events));
+
+        updateEventList(newDateStr);
+        renderCalendar();
+        hideRescheduleEventForm();
+        showFeedbackMessage('Appointment rescheduled successfully!', true);
+        location.reload();  // Refresh the page
+    }
 
     cancelRescheduleButton.addEventListener('click', () => {
         hideRescheduleEventForm();

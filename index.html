@@ -12,13 +12,10 @@
             <li><a href="admin.html">Admin</a></li>
         </ul>
     </nav>
-
     <div class="container">
         <div class="calendar-container">
             <div class="calendar">
                 <div class="calendar-header">
-                    <button id="today-button" class="hidden">Today</button>
-
                     <button id="prev-month">&lt;</button>
                     <h2 id="month-year"></h2>
                     <button id="next-month">&gt;</button>
@@ -35,14 +32,17 @@
                     </div>
                     <div id="calendar-dates" class="calendar-dates"></div>
                 </div>
+                <button id="today-button" class="hidden">Today</button>
                 <!-- Event Form -->
                 <div id="event-form" class="event-form hidden">
                     <h3>Schedule Appointment</h3>
                     <input type="hidden" id="selected-date" />
-                    <label for="event-title">Title:</label>
-                    <input type="text" id="event-title" placeholder="Event Title" />
                     <label for="event-description">Description:</label>
                     <textarea id="event-description" placeholder="Event Description"></textarea>
+                    <label for="event-address">Address:</label>
+                    <input type="text" id="event-address" placeholder="Event Address" />
+                    <label for="event-photo">Upload Photo:</label>
+                    <input type="file" id="event-photo" accept="image/*" />
                     <label for="time-slot">Time Slot:</label>
                     <select id="time-slot">
                         <option value="09:00">09:00 AM</option>
@@ -65,10 +65,12 @@
                     <input type="hidden" id="reschedule-event-index" />
                     <label for="reschedule-date">Date:</label>
                     <input type="date" id="reschedule-date" />
-                    <label for="reschedule-event-title">Title:</label>
-                    <input type="text" id="reschedule-event-title" placeholder="Event Title" />
                     <label for="reschedule-event-description">Description:</label>
                     <textarea id="reschedule-event-description" placeholder="Event Description"></textarea>
+                    <label for="reschedule-event-address">Address:</label>
+                    <input type="text" id="reschedule-event-address" placeholder="Event Address" />
+                    <label for="reschedule-event-photo">Upload Photo:</label>
+                    <input type="file" id="reschedule-event-photo" accept="image/*" />
                     <label for="reschedule-time-slot">Time Slot:</label>
                     <select id="reschedule-time-slot">
                         <option value="09:00">09:00 AM</option>
