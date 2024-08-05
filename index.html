@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="topnav">
+        <a class="active" href="admin.html">admin</a>
+      
+      </div>
     <div class="calendar">
         <div class="calendar-header">
             <button id="prev-month">&lt;</button>
@@ -28,17 +32,28 @@
 
         <!-- Event Form -->
         <div id="event-form" class="event-form hidden">
-            <h3>Add Event</h3>
+            <h3>Schedule Appointment</h3>
             <input type="hidden" id="selected-date" />
             <input type="text" id="event-title" placeholder="Event Title" />
             <textarea id="event-description" placeholder="Event Description"></textarea>
-            <button id="add-event">Add Event</button>
+            <select id="time-slot">
+                <option value="09:00">09:00 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="13:00">01:00 PM</option>
+                <option value="14:00">02:00 PM</option>
+                <option value="15:00">03:00 PM</option>
+                <option value="16:00">04:00 PM</option>
+                <option value="17:00">05:00 PM</option>
+            </select>
+            <button id="add-event">Schedule</button>
             <button id="cancel-event">Cancel</button>
         </div>
 
         <!-- Events List -->
         <div id="events-list" class="events-list hidden">
-            <h3>Events</h3>
+            <h3>Scheduled Appointments</h3>
             <ul id="event-list"></ul>
         </div>
     </div>

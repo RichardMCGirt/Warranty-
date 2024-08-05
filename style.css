@@ -54,4 +54,44 @@ body {
     text-align: center;
     padding: 10px;
     border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.date-cell:hover {
+    background-color: #f0f0f0;
+}
+
+.hidden {
+    display: none;
+}
+
+.event-form, .events-list {
+    margin-top: 20px;
+}
+
+.event-form h3, .events-list h3 {
+    margin: 0 0 10px 0;
+}
+
+.event-form input, .event-form textarea, .event-form select {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.event-form button {
+    margin-right: 5px;
+    padding: 5px 10px;
+}
+
+.events-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.events-list li {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
 }
