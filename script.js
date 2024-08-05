@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rescheduleTimeSlotSelect = document.getElementById('reschedule-time-slot');
     const saveRescheduleButton = document.getElementById('save-reschedule');
     const cancelRescheduleButton = document.getElementById('cancel-reschedule');
+    const scheduledAppointments = document.getElementById('scheduled-appointments');
 
     let currentDate = new Date();
     let events = JSON.parse(localStorage.getItem('events')) || {};
@@ -106,26 +107,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showEventForm() {
+        if (!eventForm) return;
         eventForm.classList.remove('hidden');
-        eventsListSection.classList.add('hidden');
+        if (eventsListSection) eventsListSection.classList.add('hidden');
     }
 
     function hideEventForm() {
+        if (!eventForm) return;
         eventForm.classList.add('hidden');
-        eventsListSection.classList.remove('hidden');
+        if (eventsListSection) eventsListSection.classList.remove('hidden');
     }
 
     function showRescheduleEventForm() {
+        if (!rescheduleEventForm) return;
         rescheduleEventForm.classList.remove('hidden');
-        eventsListSection.classList.add('hidden');
+        if (eventsListSection) eventsListSection.classList.add('hidden');
     }
 
     function hideRescheduleEventForm() {
+        if (!rescheduleEventForm) return;
         rescheduleEventForm.classList.add('hidden');
-        eventsListSection.classList.remove('hidden');
+        if (eventsListSection) eventsListSection.classList.remove('hidden');
     }
 
     function updateEventList(dateStr) {
+        if (!eventList) return;
         eventList.innerHTML = '';
         if (events[dateStr]) {
             events[dateStr].forEach((event, index) => {
@@ -138,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 eventList.appendChild(eventItem);
             });
         }
-        eventsListSection.classList.remove('hidden');
+        if (eventsListSection) eventsListSection.classList.remove('hidden');
+        updateScheduledAppointments();
     }
 
     function updateBookedSlots(dateStr) {
@@ -154,7 +161,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateScheduledAppointments() {
+        if (!scheduledAppointments) return;
+        scheduledAppointments.innerHTML = '';
+        for (const [dateStr, eventsOnDate] of Object.entries(events)) {
+            if (eventsOnDate && eventsOnDate.length) {
+                eventsOnDate.forEach((event, index) => {
+                    const appointmentItem = document.createElement('div');
+                    appointmentItem.classList.add('appointment-item');
+                    appointmentItem.innerHTML = `
+                        <strong>Date:</strong> ${dateStr} <br>
+                        <strong>Time:</strong> ${event.time} <br>
+                        <strong>Title:</strong> ${event.title} <br>
+                        <strong>Description:</strong> ${event.description} <br>
+                        <button class="reschedule-event" data-date="${dateStr}" data-index="${index}">Reschedule</button>
+                        <button class="delete-event" data-date="${dateStr}" data-index="${index}">Delete</button>
+                    `;
+                    scheduledAppointments.appendChild(appointmentItem);
+                });
+            }
+        }
+    }
+
     function showFeedbackMessage(message, success = true) {
+        if (!feedbackMessage) return;
         feedbackMessage.textContent = message;
         feedbackMessage.style.backgroundColor = success ? 'green' : 'red';
         feedbackMessage.style.display = 'block';
@@ -234,14 +264,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateStr = e.target.getAttribute('data-date');
             const index = e.target.getAttribute('data-index');
 
-            events[dateStr].splice(index, 1);
-            if (events[dateStr].length === 0) {
-                delete events[dateStr];
+            if (events[dateStr] && events[dateStr][index]) {
+                events[dateStr].splice(index, 1);
+                if (events[dateStr].length === 0) {
+                    delete events[dateStr];
+                }
+                localStorage.setItem('events', JSON.stringify(events));
+                updateEventList(dateStr);
+                renderCalendar();
+                showFeedbackMessage('Appointment canceled successfully!', true);
             }
-            localStorage.setItem('events', JSON.stringify(events));
-            updateEventList(dateStr);
-            renderCalendar();
-            showFeedbackMessage('Appointment canceled successfully!', true);
         }
     });
 
@@ -262,9 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Remove event from old date
             if (oldDateStr !== newDateStr) {
-                events[oldDateStr].splice(index, 1);
-                if (events[oldDateStr].length === 0) {
-                    delete events[oldDateStr];
+                if (events[oldDateStr] && events[oldDateStr][index]) {
+                    events[oldDateStr].splice(index, 1);
+                    if (events[oldDateStr].length === 0) {
+                        delete events[oldDateStr];
+                    }
                 }
                 if (!events[newDateStr]) {
                     events[newDateStr] = [];
@@ -290,4 +324,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderCalendar();
+    updateScheduledAppointments(); // Initial load of scheduled appointments
 });

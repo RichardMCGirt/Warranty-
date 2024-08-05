@@ -37,19 +37,33 @@ body {
 
 .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
+    align-items: flex-start;
     height: calc(100vh - 50px);
     width: 100%;
+    padding: 20px;
 }
 
-.calendar {
+.calendar-container, .appointments-container {
+    background: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background: #fff;
-    width: 350px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 20px;
+}
+
+.calendar-container {
+    width: 60%;
+}
+
+.appointments-container {
+    width: 35%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.appointments-container h3 {
+    margin-top: 0;
 }
 
 .calendar-header {
@@ -92,13 +106,6 @@ body {
     padding: 10px;
     border: 1px solid #ddd;
     cursor: pointer;
-}
-
-.date-cell {
-    text-align: center;
-    padding: 10px;
-    border: 1px solid #ddd;
-    cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -113,34 +120,24 @@ body {
     color: white;
 }
 
-
-.date-cell:hover {
-    background-color: #e0e0e0;
-}
-
-.date-cell.selected {
-    background-color: #4caf50;
-    color: white;
-}
-
 .hidden {
     display: none;
 }
 
-.event-form, .events-list {
+.event-form, .reschedule-event-form {
     margin-top: 20px;
 }
 
-.event-form h3, .events-list h3 {
+.event-form h3, .reschedule-event-form h3 {
     margin: 0 0 10px 0;
 }
 
-.event-form label {
+.event-form label, .reschedule-event-form label {
     display: block;
     margin-bottom: 5px;
 }
 
-.event-form input, .event-form textarea, .event-form select {
+.event-form input, .event-form textarea, .event-form select, .reschedule-event-form input, .reschedule-event-form textarea, .reschedule-event-form select {
     width: 100%;
     margin-bottom: 10px;
     padding: 10px;
@@ -148,7 +145,7 @@ body {
     border-radius: 4px;
 }
 
-.event-form button {
+.event-form button, .reschedule-event-form button {
     margin-right: 5px;
     padding: 10px 20px;
     border: none;
@@ -156,24 +153,14 @@ body {
     cursor: pointer;
 }
 
-.event-form button#add-event {
+.event-form button#add-event, .reschedule-event-form button#save-reschedule {
     background-color: #4caf50;
     color: white;
 }
 
-.event-form button#cancel-event {
+.event-form button#cancel-event, .reschedule-event-form button#cancel-reschedule {
     background-color: #f44336;
     color: white;
-}
-
-.events-list ul {
-    list-style: none;
-    padding: 0;
-}
-
-.events-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
 }
 
 .feedback-message {
