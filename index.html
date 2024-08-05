@@ -12,10 +12,13 @@
             <li><a href="admin.html">Admin</a></li>
         </ul>
     </nav>
+
     <div class="container">
         <div class="calendar-container">
             <div class="calendar">
                 <div class="calendar-header">
+                    <button id="today-button" class="hidden">Today</button>
+
                     <button id="prev-month">&lt;</button>
                     <h2 id="month-year"></h2>
                     <button id="next-month">&gt;</button>
@@ -32,7 +35,6 @@
                     </div>
                     <div id="calendar-dates" class="calendar-dates"></div>
                 </div>
-
                 <!-- Event Form -->
                 <div id="event-form" class="event-form hidden">
                     <h3>Schedule Appointment</h3>

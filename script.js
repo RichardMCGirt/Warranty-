@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveRescheduleButton = document.getElementById('save-reschedule');
     const cancelRescheduleButton = document.getElementById('cancel-reschedule');
     const scheduledAppointments = document.getElementById('scheduled-appointments');
+    const todayButton = document.getElementById('today-button');
 
     let currentDate = new Date();
     let events = JSON.parse(localStorage.getItem('events')) || {};
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function selectDateCell(dateCell, year, month, date) {
+        const today = new Date();
         if (selectedDateCell) {
             selectedDateCell.classList.remove('selected');
         }
@@ -78,6 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
         showEventForm();
         updateEventList(selectedDateInput.value);
         updateBookedSlots(selectedDateInput.value);
+
+        if (year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) {
+            todayButton.classList.add('hidden');
+        } else {
+            todayButton.classList.remove('hidden');
+        }
     }
 
     function handleDateKeydown(event, dateCell, year, month, date) {
@@ -216,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
             hideEventForm();
             showFeedbackMessage('Appointment scheduled successfully!', true);
+            location.reload();  // Refresh the page
         } else {
             showFeedbackMessage('Please fill in all fields.', false);
         }
@@ -273,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateEventList(dateStr);
                 renderCalendar();
                 showFeedbackMessage('Appointment canceled successfully!', true);
+                location.reload();  // Refresh the page
             }
         }
     });
@@ -314,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
             hideRescheduleEventForm();
             showFeedbackMessage('Appointment rescheduled successfully!', true);
+            location.reload();  // Refresh the page
         } else {
             showFeedbackMessage('Please fill in all fields.', false);
         }
@@ -321,6 +332,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cancelRescheduleButton.addEventListener('click', () => {
         hideRescheduleEventForm();
+    });
+
+    todayButton.addEventListener('click', () => {
+        currentDate = new Date();
+        renderCalendar();
+        todayButton.classList.add('hidden');
     });
 
     renderCalendar();

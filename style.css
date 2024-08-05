@@ -175,3 +175,13 @@ body {
     z-index: 1000;
     font-weight: bold;
 }
+
+#today-button {
+    margin-top: 10px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
