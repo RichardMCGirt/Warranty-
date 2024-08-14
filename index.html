@@ -9,16 +9,11 @@
 <body>
     <div id="content">
         <h1>Google Calendar Integration with Airtable</h1>
-        <button id="authorize_button">Authorize Google Calendar</button>
-        <button id="signout_button" style="display:none;">Sign Out</button>
 
         <div id="calendar_events" style="display:none;">
             <h2>Calendar Events</h2>
             <ul id="event_list"></ul>
         </div>
-
-        <button id="sync_button" style="display:none;">Sync Events with Airtable</button>
-    </div>
 
     <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FToronto&bgcolor=%23ffffff&src=d2FycmFudHlAdmFuaXJpbnN0YWxsZWRzYWxlcy5jb20&color=%239E69AF" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     <script src="https://apis.google.com/js/api.js"></script>

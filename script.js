@@ -20,25 +20,31 @@ let syncButton = document.getElementById('sync_button');
 let eventList = document.getElementById('event_list');
 
 function handleClientLoad() {
+    console.log("Loading Google API client...");
     gapi.load('client:auth2', initClient);
 }
 
 function initClient() {
+    console.log("Initializing Google API client...");
     gapi.client.init({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES
     }).then(function () {
+        console.log("Google API client initialized.");
         // Listen for sign-in state changes.
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
         // Handle the initial sign-in state immediately when the page loads.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    }).catch(function(error) {
+        console.error("Error initializing Google API client:", error);
     });
 }
 
 function updateSigninStatus(isSignedIn) {
+    console.log("Sign-in status changed:", isSignedIn);
     if (isSignedIn) {
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
@@ -53,10 +59,12 @@ function updateSigninStatus(isSignedIn) {
 }
 
 function handleAuthClick(event) {
+    console.log("Sign-in button clicked.");
     gapi.auth2.getAuthInstance().signIn();
 }
 
 function handleSignoutClick(event) {
+    console.log("Sign-out button clicked.");
     gapi.auth2.getAuthInstance().signOut();
 }
 
@@ -67,6 +75,7 @@ function listUpcomingEvents() {
     ];
 
     eventList.innerHTML = ''; // Clear the list before adding new events
+    console.log("Fetching events from calendars...");
 
     calendarIds.forEach(calendarId => {
         gapi.client.calendar.events.list({
@@ -78,6 +87,7 @@ function listUpcomingEvents() {
             'orderBy': 'startTime'
         }).then(function(response) {
             let events = response.result.items;
+            console.log("Events fetched from calendar:", calendarId, events);
 
             if (events.length > 0) {
                 document.getElementById('calendar_events').style.display = 'block';
@@ -93,13 +103,17 @@ function listUpcomingEvents() {
                 li.textContent = 'No upcoming events found for this calendar.';
                 eventList.appendChild(li);
             }
+        }).catch(function(error) {
+            console.error("Error fetching events from calendar:", calendarId, error);
         });
     });
 }
 
 function syncWithAirtable() {
+    console.log("Syncing events with Airtable...");
     let events = Array.from(eventList.children).map(item => item.textContent);
     events.forEach(event => {
+        console.log("Syncing event:", event);
         let data = {
             "fields": {
                 "Calendar Link": event, // The link to the calendar event
@@ -150,13 +164,11 @@ function syncWithAirtable() {
             body: JSON.stringify(data)
         }).then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
+            console.log('Airtable sync success:', data);
         }).catch((error) => {
-            console.error('Error:', error);
+            console.error('Airtable sync error:', error);
         });
     });
 }
-
-
 
 handleClientLoad();
