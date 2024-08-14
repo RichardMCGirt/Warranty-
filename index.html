@@ -1,22 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Calendar Integration with Airtable</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div id="content">
-        <h1>Google Calendar Integration with Airtable</h1>
-
-        <div id="calendar_events" style="display:none;">
-            <h2>Calendar Events</h2>
-            <ul id="event_list"></ul>
-        </div>
-
-    <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FToronto&bgcolor=%23ffffff&src=d2FycmFudHlAdmFuaXJpbnN0YWxsZWRzYWxlcy5jb20&color=%239E69AF" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+<html>
+  <head>
+    <title>Google Calendar API Example</title>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="scripts.js"></script>
-</body>
+    <script src="script.js"></script>
+  </head>
+  <body onload="handleClientLoad()">
+    <button id="signInButton" onclick="handleSignInClick()">Sign In</button>
+    <button onclick="handleSignOutClick()">Sign Out</button>
+  </body>
 </html>
