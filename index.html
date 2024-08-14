@@ -3,108 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Scheduler</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Google Calendar Integration with Airtable</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="topnav">
-        <ul>
-            <li><a href="admin.html">Admin</a></li>
-        </ul>
-    </nav>
-    <div class="container">
-        <div class="calendar-container">
-            <div class="calendar">
-                <div class="calendar-header">
-                    <button id="prev-month">&lt;</button>
-                    <h2 id="month-year"></h2>
-                    <button id="next-month">&gt;</button>
-                </div>
-                <div class="calendar-body">
-                    <div class="calendar-days">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div id="calendar-dates" class="calendar-dates"></div>
-                </div>
-                <button id="today-button" class="hidden">Today</button>
-                <!-- Event Form -->
-               <!-- Event Form -->
-<div id="event-form" class="event-form hidden">
-    <h3>Schedule Appointment</h3>
-    <input type="hidden" id="selected-date" />
-    <label for="event-description">Description:</label>
-    <textarea id="event-description" placeholder="Event Description"></textarea>
-    <label for="event-address">Address:</label>
-    <input type="text" id="event-address" placeholder="Event Address" />
-    <label for="event-city">City:</label>
-    <input type="text" id="event-city" placeholder="City" />
-    <label for="event-state">State:</label>
-    <input type="text" id="event-state" placeholder="State" />
-    <label for="event-zip">Zip Code:</label>
-    <input type="text" id="event-zip" placeholder="Zip Code" />
-    <label for="event-photo">Upload Photo:</label>
-    <input type="file" id="event-photo" accept="image/*" />
-    <label for="time-slot">Time Slot:</label>
-    <select id="time-slot">
-        <option value="09:00">09:00 AM</option>
-        <option value="10:00">10:00 AM</option>
-        <option value="11:00">11:00 AM</option>
-        <option value="12:00">12:00 PM</option>
-        <option value="13:00">01:00 PM</option>
-        <option value="14:00">02:00 PM</option>
-        <option value="15:00">03:00 PM</option>
-        <option value="16:00">04:00 PM</option>
-        <option value="17:00">05:00 PM</option>
-    </select>
-    <button id="add-event">Schedule</button>
-    <button id="cancel-event">Cancel</button>
-</div>
+    <div id="content">
+        <h1>Google Calendar Integration with Airtable</h1>
+        <button id="authorize_button">Authorize Google Calendar</button>
+        <button id="signout_button" style="display:none;">Sign Out</button>
 
-                </div>
-
-                <!-- Reschedule Event Form -->
-                <div id="reschedule-event-form" class="reschedule-event-form hidden">
-                    <h3>Reschedule Appointment</h3>
-                    <input type="hidden" id="reschedule-event-index" />
-                    <label for="reschedule-date">Date:</label>
-                    <input type="date" id="reschedule-date" />
-                    <label for="reschedule-event-description">Description:</label>
-                    <textarea id="reschedule-event-description" placeholder="Event Description"></textarea>
-                    <label for="reschedule-event-address">Address:</label>
-                    <input type="text" id="reschedule-event-address" placeholder="Event Address" />
-                    <label for="reschedule-event-photo">Upload Photo:</label>
-                    <input type="file" id="reschedule-event-photo" accept="image/*" />
-                    <label for="reschedule-time-slot">Time Slot:</label>
-                    <select id="reschedule-time-slot">
-                        <option value="09:00">09:00 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="13:00">01:00 PM</option>
-                        <option value="14:00">02:00 PM</option>
-                        <option value="15:00">03:00 PM</option>
-                        <option value="16:00">04:00 PM</option>
-                        <option value="17:00">05:00 PM</option>
-                    </select>
-                    <button id="save-reschedule">Save</button>
-                    <button id="cancel-reschedule">Cancel</button>
-                </div>
-            </div>
+        <div id="calendar_events" style="display:none;">
+            <h2>Calendar Events</h2>
+            <ul id="event_list"></ul>
         </div>
 
-        <!-- Scheduled Appointments -->
-        <div class="appointments-container">
-            <h3>Scheduled Appointments</h3>
-            <div id="scheduled-appointments"></div>
-        </div>
+        <button id="sync_button" style="display:none;">Sync Events with Airtable</button>
     </div>
 
-    <script src="script.js"></script>
+
+        <iframe src="https://calendar.google.com/calendar/embed?src=c_45db4e963c3363676038697855d7aacfd1075da441f9308e44714768d4a4f8de%40group.calendar.google.com&ctz=America/Los_Angeles"
+            style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+    
+        <iframe src="https://calendar.google.com/calendar/embed?src=c_03867438b82e5dfd8d4d3b6096c8eb1c715425fa012054cc95f8dea7ef41c79b%40group.calendar.google.com&ctz=America/Los_Angeles"
+            style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

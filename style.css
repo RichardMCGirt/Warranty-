@@ -1,187 +1,42 @@
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    background-color: #f0f0f0;
-}
-
-.topnav {
-    width: 100%;
-    background-color: #333;
-}
-
-.topnav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-.topnav ul li {
-    margin: 0;
-}
-
-.topnav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    display: block;
-}
-
-.topnav ul li a:hover {
-    background-color: #575757;
-}
-
-.container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    height: calc(100vh - 50px);
-    width: 100%;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
     padding: 20px;
 }
 
-.calendar-container, .appointments-container {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+#content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    padding: 20px;
+    display: inline-block;
 }
 
-.calendar-container {
-    width: 60%;
-}
-
-.appointments-container {
-    width: 35%;
-    height: 100%;
-    overflow-y: auto;
-}
-
-.appointments-container h3 {
-    margin-top: 0;
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.calendar-header h2 {
-    margin: 0;
-    font-size: 1.5em;
-}
-
-.calendar-body {
-    padding-top: 10px;
-}
-
-.calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-}
-
-.calendar-days div {
-    padding: 5px;
-    font-weight: bold;
-}
-
-.calendar-dates {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-}
-
-.calendar-dates div {
-    text-align: center;
-    padding: 10px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.date-cell:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-}
-
-.date-cell.selected {
-    background-color: #4caf50;
+button {
+    background-color: #4285F4;
     color: white;
-}
-
-.hidden {
-    display: none;
-}
-
-.event-form, .reschedule-event-form {
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
     margin-top: 20px;
 }
 
-.event-form h3, .reschedule-event-form h3 {
-    margin: 0 0 10px 0;
+button:hover {
+    background-color: #357ae8;
 }
 
-.event-form label, .reschedule-event-form label {
-    display: block;
-    margin-bottom: 5px;
+#calendar_events ul {
+    list-style: none;
+    padding: 0;
 }
 
-.event-form input, .event-form textarea, .event-form select, .reschedule-event-form input, .reschedule-event-form textarea, .reschedule-event-form select {
-    width: 100%;
-    margin-bottom: 10px;
+#calendar_events li {
+    background: #eee;
+    margin: 10px 0;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.event-form button, .reschedule-event-form button {
-    margin-right: 5px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.event-form button#add-event, .reschedule-event-form button#save-reschedule {
-    background-color: #4caf50;
-    color: white;
-}
-
-.event-form button#cancel-event, .reschedule-event-form button#cancel-reschedule {
-    background-color: #f44336;
-    color: white;
-}
-
-.feedback-message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    color: white;
-    border-radius: 4px;
-    display: none;
-    z-index: 1000;
-    font-weight: bold;
-}
-
-#today-button {
-    margin-top: 10px;
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 5px;
 }
