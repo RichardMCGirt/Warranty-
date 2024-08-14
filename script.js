@@ -10,9 +10,9 @@ const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v
 const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
 // Airtable API credentials
-const AIRTABLE_API_KEY = 'YOUR_AIRTABLE_API_KEY';
-const BASE_ID = 'YOUR_BASE_ID';
-const TABLE_NAME = 'YOUR_TABLE_NAME';
+const AIRTABLE_API_KEY = 'patJrhO2Eme64eA4v.fc14f699da347bf22712bc3833eb29ba384d37dfe36ed08c0aa4dafe283015d8';
+const BASE_ID = 'appO21PVRA4Qa087I';
+const TABLE_NAME = 'tbl6EeKPsNuEvt5yJ';
 
 let authorizeButton = document.getElementById('authorize_button');
 let signoutButton = document.getElementById('signout_button');
@@ -33,11 +33,8 @@ function initClient() {
         // Listen for sign-in state changes.
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
-        // Handle the initial sign-in state.
+        // Handle the initial sign-in state immediately when the page loads.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
-        syncButton.onclick = syncWithAirtable;
     });
 }
 
@@ -45,7 +42,7 @@ function updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
-        listUpcomingEvents();
+        listUpcomingEvents(); // Fetch events automatically if signed in
     } else {
         authorizeButton.style.display = 'block';
         signoutButton.style.display = 'none';
@@ -77,7 +74,7 @@ function listUpcomingEvents() {
             'timeMin': (new Date()).toISOString(),
             'showDeleted': false,
             'singleEvents': true,
-            'maxResults': 10,
+            'maxResults': 900,
             'orderBy': 'startTime'
         }).then(function(response) {
             let events = response.result.items;
@@ -100,17 +97,47 @@ function listUpcomingEvents() {
     });
 }
 
-
-
 function syncWithAirtable() {
     let events = Array.from(eventList.children).map(item => item.textContent);
     events.forEach(event => {
         let data = {
             "fields": {
-                "Calendar Link": event, // Example of how you might link the event name to your Airtable field
-                "Scheduled Service Start Time": event.split('(')[1].split(' ')[0], // Example of mapping start time
-                "Scheduled Service End Time": event.split('(')[1].split(' ')[2] // Example of mapping end time
-                // Map other fields as needed
+                "Calendar Link": event, // The link to the calendar event
+                "Scheduled Service Start Time": event.split('(')[1].split(' ')[0], // Start time (assuming it's in the event text)
+                "Scheduled Service End Time": event.split('(')[1].split(' ')[2], // End time (assuming it's in the event text)
+
+                // Additional fields (mock values for now, you'll replace these with actual data from events)
+                "Status": "Pending", // Static value or derive from the event
+                "Branch": "Main Branch", // Static value or derive from event details
+                "Builder": "Builder Name", // If applicable, map from event description or attendees
+                "Picture(s) of Issue": ["https://linktoimage.com/image1.jpg"], // Example link, map from event description if available
+                "Warranty Period (Days)": "365", // Example value, derive from event details
+                "Date Warranty Started": "2024-08-01", // Example date, derive from event
+                "Billable/ Non Billable": "Billable", // Example value, derive from event
+                "Repair Charge Amount (If Billable)": "100.00", // Example value, derive from event details
+                "Billable Reason (If Billable)": "Repair needed", // Example reason, derive from event
+                "Warranty Billable Check": true, // Boolean, derive from event
+                "Lot Number and Community/Neighborhood": "Lot 42, Example Community", // Derive from event description or other details
+                "Homeowner Name": "John Doe", // Map from event description or attendees
+                "Street Address": "1234 Elm Street", // Map from event description
+                "City": "Some City", // Map from event description
+                "State": "CA", // Map from event description
+                "Zip Code": "90210", // Map from event description
+                "Contact Email": "johndoe@example.com", // Map from event attendees or description
+                "Materials Needed": ["Material A", "Material B"], // Derive from event description
+                "Material Vendor": "Vendor Name", // Map from event description
+                "Vendor PO #1": "PO12345", // Example PO, derive from event
+                "Vendor #1 Cost": "250.00", // Example cost, derive from event
+                "Secondary Vendor": "Secondary Vendor Name", // Map from event description or attendees
+                "Vendor PO #2": "PO54321", // Example PO, derive from event
+                "Vendor #2 Cost": "150.00", // Example cost, derive from event
+                "Vendor Email": "vendor@example.com", // Map from event description or attendees
+                "Vendor Secondary Email": "secondary@example.com", // Map from event description or attendees
+                "Vendor Return Email": "return@example.com", // Map from event description or attendees
+                "Vendor Secondary Return Email": "secondaryreturn@example.com", // Map from event description or attendees
+                "Secondary Vendor Email": "secondaryvendor@example.com", // Map from event description or attendees
+                "Secondary Vendor Second Email": "secondsecondary@example.com", // Map from event description or attendees
+                "Secondary Vendor Return Email": "secondaryreturn@example.com" // Map from event description or attendees
             }
         };
 
@@ -130,5 +157,6 @@ function syncWithAirtable() {
     });
 }
 
-// Load the API client and auth2 library
+
+
 handleClientLoad();

@@ -29,14 +29,8 @@ button:hover {
     background-color: #357ae8;
 }
 
-#calendar_events ul {
-    list-style: none;
-    padding: 0;
-}
-
-#calendar_events li {
-    background: #eee;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
+#status_message {
+    margin-top: 20px;
+    font-size: 18px;
+    color: green;
 }
